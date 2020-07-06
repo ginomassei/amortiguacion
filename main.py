@@ -120,7 +120,7 @@ def menu():
                 x0 = float(input("Inserte posición inicial: "))
                 ccr, Tn, fn = vibracion_libre_amortiguada(v0, x0, p, n, m, k, pos, vel, ace, time)
 
-                columns = 
+                columns = ("Coeficiente critico", "Periodo natural", "Frecuencia natural")
                 lista = [ccr, Tn, fn]
                 lista_b = [lista]
             
@@ -132,7 +132,7 @@ def menu():
                 pass  # TO DO
             
             # Plot
-            grafico(time, pos, vel, ace, lista_b)
+            grafico(time, pos, vel, ace, lista_b, columns)
 
         elif option == 0:
             print_blue_text('Fin del programa.')
