@@ -1,4 +1,4 @@
-import mplcursors
+import mplcursors as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from vlt import * 
@@ -60,7 +60,7 @@ def grafico(time, pos, vel, ace, lista, columns):
     plt.grid(color="black", linestyle="-", linewidth=0.3)
     plt.legend()
 
-    mplcursors.cursor()
+    mpl.cursor()
 
     # Plot table.
     fig2, ax = plt.subplots()
