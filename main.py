@@ -70,7 +70,7 @@ def grafico(time, pos, vel, ace, lista, columns):
     ax.axis('tight')
     # Putting data on.
     df = pd.DataFrame(lista, columns=columns)
-    ax.table(cellText=df.values, colLabels=df.columns, loc='center', coLoc="center", , fontsize=12)
+    ax.table(cellText=df.values, colLabels=df.columns, loc='center', colLoc="center", rowLoc="center", cellLoc="center", fontsize=12)
     fig.tight_layout()  
 
     # Muestra los gráficos.
