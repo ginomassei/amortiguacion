@@ -35,7 +35,7 @@ def vibracion_libre_amortiguada(v0, x0, p, n, m, K, pos, vel, ace, time):
 			ace.append((C1*(n**2)*(math.e**((-n)*i)))+(C2*i*(n**2)*(math.e**((-n)*i))))
 
 # Coeficiente de amortiguamiento critico
-		ccr= 2* math.sqrt(K*m)
+		
 
  # Caso donde n<p "amortiguamiento subcritico" caso = 3
 	elif caso == 3:
@@ -53,5 +53,6 @@ def vibracion_libre_amortiguada(v0, x0, p, n, m, K, pos, vel, ace, time):
 	
 	Tn= 2*math.pi*math.sqrt(m/K)
 	fn = 1/(2*math.pi*math.sqrt(m/K))
+	ccr= 2* math.sqrt(K*m)
 
 	return ccr, Tn, fn

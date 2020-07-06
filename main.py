@@ -1,4 +1,4 @@
-import mplcursors as mpl
+import mplcursors
 import matplotlib.pyplot as plt
 import numpy as np
 from vlt import * 
@@ -60,7 +60,7 @@ def grafico(time, pos, vel, ace, lista, columns):
     plt.grid(color="black", linestyle="-", linewidth=0.3)
     plt.legend()
 
-    mpl.cursor()
+    mplcursors.cursor()
 
     # Plot table.
     fig2, ax = plt.subplots()
@@ -70,7 +70,7 @@ def grafico(time, pos, vel, ace, lista, columns):
     ax.axis('tight')
     # Putting data on.
     df = pd.DataFrame(lista, columns=columns)
-    ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+    ax.table(cellText=df.values, colLabels=df.columns, loc='center', coLoc="center", , fontsize=12)
     fig.tight_layout()  
 
     # Muestra los gráficos.
@@ -112,7 +112,7 @@ def menu():
                 t, f, a = vibracion_libre_traslacion(v0, t0, x0, p, n, m, k, pos, vel, ace, time)
 
                 columns = ("Periodo", "Frecuencia", "Amplitud")
-                lista = [t, f, a]
+                lista = [round(t, 3), round(f, 3), round(a, 3)]
                 lista_b = [lista]
 
             elif option == 2:
@@ -121,7 +121,7 @@ def menu():
                 ccr, Tn, fn = vibracion_libre_amortiguada(v0, x0, p, n, m, k, pos, vel, ace, time)
 
                 columns = ("Coeficiente critico", "Periodo natural", "Frecuencia natural")
-                lista = [ccr, Tn, fn]
+                lista = [round(ccr, 3), round(Tn, 3), round(fn, 3)]
                 lista_b = [lista]
             
             elif option == 3:
