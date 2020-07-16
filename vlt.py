@@ -1,13 +1,12 @@
 import math
 
-
-def vibracion_libre_traslacion(v0, t0, x0, p, n, m, K, pos, vel, ace, time):
+def vibracion_libre_traslacion(v0, x0, p, m, K, pos, vel, ace, time):
     # Definicion de casos.
-    if v0 == 0 and t0 == 0 and x0 != 0:
+    if v0 == 0 and x0 != 0:
         caso = 1
-    elif t0 == 0 and x0 == 0 and v0 != 0:
+    elif x0 == 0 and v0 != 0:
         caso = 2
-    elif t0 == 0 and x0 != 0 and v0 != 0:
+    elif x0 != 0 and v0 != 0:
         caso = 3
     else:
         raise Exception("Los datos ingresados son erroneos")
@@ -23,7 +22,7 @@ def vibracion_libre_traslacion(v0, t0, x0, p, n, m, K, pos, vel, ace, time):
         for i in time:
             pos.append(x0 * math.cos(p * i))
             vel.append(- (p * x0 * math.sin(p * i)))
-            ace.append(- (((p**2) * x0 * math.cos(p * i)) - ((p ** 2) * x0 * math.cos(p * i))))
+            ace.append(- ((p**2) * x0 * math.cos(p * i)))
 
     elif caso == 2:
         for i in time:

@@ -1,11 +1,9 @@
-import mplcursors
-import matplotlib.pyplot as plt
 import numpy as np
-from vlt import * 
+from vlt import *
 from vla import *
-from matplotlib.pyplot import figure
+from vfsa import *
+from vfca import *
 import pandas as pd
-
 
 # ANSI Colours functions.
 def print_red_text(string):
@@ -29,11 +27,11 @@ def print_blue_text(string):
 
 
 # Plot
-def grafico(time, pos, vel, ace, lista, columns):
+def grafico(time, pos, vel, ace, lista, columns: list, title: list):
     # Graficos con ejes.
-    fig = figure()
-    fig.subplots_adjust(hspace=15)
-    fig.suptitle("Analisis de vibración", fontsize=16)
+    fig = plt.figure()
+    fig.subplots_adjust(hspace=0)
+    fig.suptitle("Analisis de vibración: {}".format(title), fontsize=16)
 
     plt.subplot(3, 1, 1)
     plt.plot(time, pos, color="black", label="Posición")
@@ -70,35 +68,34 @@ def grafico(time, pos, vel, ace, lista, columns):
     ax.axis('tight')
     # Putting data on.
     df = pd.DataFrame(lista, columns=columns)
-    ax.table(cellText=df.values, colLabels=df.columns, loc='center', colLoc="center", rowLoc="center", cellLoc="center", fontsize=12)
-    fig.tight_layout()  
+    the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center', colLoc="center", rowLoc="center", cellLoc="center")
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(12)
+    the_table.scale(1.2, 1.2)
 
     # Muestra los gráficos.
     plt.show()
 
-
 def menu():
+    global lista_b, columns, title
     option = -1
     while option != 0:
-        print_red_text('Amortiguacion.')
+        print_blue_text('Simulador de oscilaciones')
 
-        print('1 - Vibracion Libre de Traslacion.')
-        print('2 - Vibracion Libre Amortiguada.')
-        print('3 - Vibracion Forzada sin amortiguamiento.')
-        print('4 - Vibracion Forzada de Estado estable.')
-        print('5 - Vibracion forzada con amortiguamiento.')
+        print('1 - Vibración Libre de Traslacion.')
+        print('2 - Vibración Libre Amortiguada.')
+        print('3 - Vibración Forzada sin amortiguamiento.')
+        print('4 - Vibración Forzada con amortiguamiento.')
         print('0 - Salir\n')
 
         option = int(input('Escriba el número del caso para resolver: '))
 
         if 0 < option < 5:
 
-            k = float(input("Inserte el coeficiente elástica(N/m): "))
-            m = float(input("Inserte la Masa del cuerpo(Kg): "))
-            c = float(input("Inserte el coeficiente de amortiguamiento(N/(m/s)): "))
-            time = np.linspace(0, int(input("Inserte Tiempo maximo: ")), 200)
+            k = float(input("Ingrese el coeficiente elástica (N/m): "))
+            m = float(input("Ingrese la Masa del cuerpo (Kg): "))
+            time = np.linspace(0, int(input("Ingrese Tiempo de simulación (s): ")), 500)
             p = math.sqrt(k / m)
-            n = (c / (2 * m))
 
             # --- Listas 
             pos = []  # Lista valores posicion
@@ -106,40 +103,67 @@ def menu():
             ace = []  # Lista valores aceleracion
 
             if option == 1:
-                v0 = float(input("Inserte velocidad inicial: "))
-                t0 = float(input("Inserte tiempo inicial: "))
-                x0 = float(input("Inserte posición inicial: "))
-                t, f, a = vibracion_libre_traslacion(v0, t0, x0, p, n, m, k, pos, vel, ace, time)
+                title = "Vibración libre de traslacion"
+                print_green_text(title)
+                x0 = float(input("Ingrese posición inicial (m): "))
+                v0 = float(input("Ingrese velocidad inicial (m/s): "))
+                t, f, a = vibracion_libre_traslacion(v0, x0, p, m, k, pos, vel, ace, time)
 
                 columns = ("Periodo", "Frecuencia", "Amplitud")
                 lista = [round(t, 3), round(f, 3), round(a, 3)]
                 lista_b = [lista]
 
             elif option == 2:
-                v0 = float(input("Inserte velocidad inicial: "))
-                x0 = float(input("Inserte posición inicial: "))
+                title = "Vibración libre amortiguada"
+                print_green_text(title)
+                c = float(input("Ingrese el coeficiente de amortiguamiento (N/(m/s)): "))
+                x0 = float(input("Ingrese posición inicial (m): "))
+                v0 = float(input("Ingrese velocidad inicial (m/s): "))
+                n = (c / (2 * m))
                 ccr, Tn, fn = vibracion_libre_amortiguada(v0, x0, p, n, m, k, pos, vel, ace, time)
 
-                columns = ("Coeficiente critico", "Periodo natural", "Frecuencia natural")
+                columns = ("C. crítico amortiguamiento", "Periodo natural", "Frecuencia natural")
                 lista = [round(ccr, 3), round(Tn, 3), round(fn, 3)]
                 lista_b = [lista]
             
             elif option == 3:
-                pass  # TO DO
+                title = "Vibración forzada sin amortiguamiento"
+                print_green_text(title)
+                F = float(input("Ingrese fuerza exitatriz (N): "))
+                Wf = float(input("Ingrese velocidad angular de la fuerza exitatriz (rad/s): "))
+                x0 = float(input("Ingrese posición inicial (m): "))
+                v0 = float(input("Ingrese velocidad incial (m/s): "))
+                Tn, fn, T, f, Fa = vibracion_forzada_sin_amortiguamiento(x0, v0, m, F, p, Wf, time, pos, vel, ace)
+
+                columns = ("Periodo (VL)", "Frecuencia (VL)", "Periodo (VF)", "Frecuencia (VF)", "Factor amplificación")
+                lista = [round(Tn, 3), round(fn, 3), round(T, 3), round(f, 3), round(Fa, 3)]
+                lista_b = [lista]
+
             elif option == 4:
-                pass  # TO DO
-            elif option == 5:
-                pass  # TO DO
-            
+                title = "Vibración forzada con amortiguamiento"
+                print_green_text(title)
+                F = float(input("Ingrese fuerza exitatriz (N): "))
+                Wf = float(input("Ingrese velocidad angular de la fuerza exitatriz (rad/s): "))
+                c = float(input("Ingrese el coeficiente de amortiguamiento (N/(m/s)): "))
+                x0 = float(input("Ingrese posición inicial (m): "))
+                v0 = float(input("Ingrese velocidad incial (m/s): "))
+                n = (c / (2 * m))
+                Tn, fn, T, f, ccr, Fa, A = vibracion_forzada_con_armotiguamiento(x0, v0, p, n, m, k, F, Wf, pos, vel, ace, time)
+
+                columns = ("Periodo (VL)", "Frecuencia (VL)", "Periodo (VF)", "Frecuencia (VF)", "C. crit. amortiguamiento"
+                           , "F. de amplificación", "Amplitud")
+                lista = [round(Tn, 3), round(fn, 3), round(T, 3), round(f, 3), round(ccr, 3), round(Fa, 3), round(A, 3)]
+                lista_b = [lista]
+
             # Plot
-            grafico(time, pos, vel, ace, lista_b, columns)
+            grafico(time, pos, vel, ace, lista_b, columns, title)
 
         elif option == 0:
             print_blue_text('Fin del programa.')
             return
             
         else:
-            print('Ingrese un número de opción válido.')
+            print_red_text('Ingrese un número de opción válido.')
 
 
 def main():
